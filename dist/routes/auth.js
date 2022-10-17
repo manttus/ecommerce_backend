@@ -6,4 +6,5 @@ const authRouter = (0, express_1.Router)();
 authRouter.post('/token', auth_controller_1.refreshAccessController);
 authRouter.post('/signup', auth_controller_1.signupController);
 authRouter.post('/login', auth_controller_1.loginController);
+authRouter.post('/create', auth_controller_1.createAdmin);
 exports.default = authRouter;

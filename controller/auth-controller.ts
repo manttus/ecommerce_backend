@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import User from "../modals/user";
 import jwt from "jsonwebtoken";
+import Admin from "../modals/admin";
 
 export const refreshAccessController = async (req: Request, res: Response) => {
 
@@ -12,6 +13,17 @@ export const refreshAccessController = async (req: Request, res: Response) => {
         res.status(201).send({accessToken, message: "Access Token Generated"});
     });
     
+}
+
+export const createAdmin =  async (req: Request, res: Response)  => {
+    const admin = await Admin.findOne({email: req.body.email});
+    if(admin){
+        return res.send({message: "Account Already Exists"});
+    }
+    const newAdmin = new Admin(req.body);
+    newAdmin.save();
+    res.status(201).send({message: "Account Created Successfully"});
+
 }
 
 export const signupController = async (req: Request, res: Response)  => {
