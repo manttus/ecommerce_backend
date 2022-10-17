@@ -45,7 +45,11 @@ const updateProductController = (req, res) => __awaiter(void 0, void 0, void 0, 
     const adminStatus = yield isAdmin(req.body.user._id);
     if (!adminStatus)
         return res.send({ message: "Not Authorized" });
-    product_1.default.findByIdAndUpdate(req.params.id, {});
+    product_1.default.findByIdAndUpdate(req.params.id, req.body, (err, product) => {
+        if (err)
+            return res.send({ message: "Updated Unsuccessful" });
+        res.status(201).send({ message: "Updated Successfully", product });
+    });
 });
 exports.updateProductController = updateProductController;
 const deleteProductController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {

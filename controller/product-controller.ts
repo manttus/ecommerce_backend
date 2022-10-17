@@ -1,20 +1,16 @@
 import { Request, Response } from "express"
 import Product from "../modals/product"
 import User from "../modals/user";
+import jwt from "jsonwebtoken";
 
 
 const isAdmin = async(id: string) => {
-
     const user =  await User.findById({_id: id});
-
-    if(!user!.isAdmin){
-        return false
-    }
+     if(!user!.isAdmin){
+        return false;
+     }
     return true;
-
 }
-
-
 
 export const getProductController = async (req: Request, res: Response) => {
     const products = await Product.find();
@@ -41,10 +37,10 @@ export const addProductController = async (req: Request, res: Response) => {
 export const updateProductController = async(req: Request, res: Response) => {
     const adminStatus: boolean = await isAdmin(req.body.user._id)
     if(!adminStatus) return res.send({message: "Not Authorized"});
-
-    Product.findByIdAndUpdate(req.params.id as string, {})
-
-
+    Product.findByIdAndUpdate(req.params.id as string, req.body, (err: jwt.VerifyErrors | null , product: string | jwt.JwtPayload | undefined) => {
+        if(err) return res.send({message: "Updated Unsuccessful"});
+        res.status(201).send({message: "Updated Successfully", product});
+    });
 }
 
 export const deleteProductController = async(req: Request, res: Response) => {
