@@ -5,7 +5,6 @@ import mongoose from 'mongoose';
 import authRouter from './routes/auth';
 dotenv.config();
 
-
 const app = express();
 
 mongoose.connect(process.env.CONNECT as string, (err: mongoose.CallbackError) => {

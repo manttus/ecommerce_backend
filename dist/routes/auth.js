@@ -13,16 +13,39 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const user_1 = __importDefault(require("../modals/user"));
 const authRouter = (0, express_1.Router)();
-authRouter.post('/signin', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const exists = yield user_1.default.findOne({ email: req.body.email });
-    if (!exists) {
-        const newUser = new user_1.default(req.body);
-        newUser.save();
+authRouter.post('/token', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (req.body.token === null)
+        return res.send({ message: "Invalid Token" });
+    jsonwebtoken_1.default.verify(req.body.token, process.env.REFRESH, (err, user) => {
+        if (err)
+            return res.send({ message: "Invalid Token", error: err });
+        const accessToken = jsonwebtoken_1.default.sign({ _id: user._id }, process.env.SECRET, { expiresIn: '70s' });
+        res.status(201).send({ accessToken, message: "Access Token Generated" });
+    });
+}));
+authRouter.post('/signup', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_1.default.findOne({ email: req.body.email });
+    if (user) {
+        return res.send({ message: "Account Already Exists" });
     }
+    const newUser = new user_1.default(req.body);
+    newUser.save();
+    res.status(201).send({ message: "Account Created Successfully" });
+}));
+authRouter.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_1.default.findOne({ email: req.body.email });
+    if (!user) {
+        // const newUser = new User(req.body);
+        // newUser.save();
+        return res.status(404).send({ message: "Invalid Account" });
+    }
+    const accessToken = jsonwebtoken_1.default.sign({ _id: user.id }, process.env.SECRET, { expiresIn: "70s" });
+    const refreshToken = jsonwebtoken_1.default.sign({ _id: user.id }, process.env.REFRESH);
     // const account = new User(req.body);
     // account.save();
-    res.send({ message: "Account Created Succefully" });
+    res.status(201).send({ accessToken, refreshToken, message: "Successful" });
 }));
 exports.default = authRouter;
