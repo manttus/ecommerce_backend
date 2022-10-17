@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginController = exports.signupController = exports.createAdmin = exports.refreshAccessController = void 0;
+exports.adminLogin = exports.loginController = exports.signupController = exports.createAdmin = exports.refreshAccessController = void 0;
 const user_1 = __importDefault(require("../models/user"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const admin_1 = __importDefault(require("../models/admin"));
@@ -61,3 +61,17 @@ const loginController = (req, res) => __awaiter(void 0, void 0, void 0, function
     res.status(201).send({ accessToken, refreshToken, message: "Successful" });
 });
 exports.loginController = loginController;
+const adminLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const admin = yield admin_1.default.findOne({ email: req.body.email });
+    if (!admin) {
+        // const newUser = new User(req.body);
+        // newUser.save();
+        return res.status(404).send({ message: "Invalid Account" });
+    }
+    const accessToken = jsonwebtoken_1.default.sign({ _id: admin.id }, process.env.SECRET, { expiresIn: "70s" });
+    const refreshToken = jsonwebtoken_1.default.sign({ _id: admin.id }, process.env.REFRESH);
+    // const account = new User(req.body);
+    // account.save();
+    res.status(201).send({ accessToken, refreshToken, message: "Successful" });
+});
+exports.adminLogin = adminLogin;

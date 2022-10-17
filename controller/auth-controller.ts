@@ -50,3 +50,17 @@ export const loginController = async (req: Request, res: Response) => {
     // account.save();
     res.status(201).send({accessToken, refreshToken, message: "Successful" });
 }
+
+export const adminLogin = async (req: Request, res: Response) => {
+    const admin = await Admin.findOne({email: req.body.email});
+    if(!admin){
+        // const newUser = new User(req.body);
+        // newUser.save();
+        return res.status(404).send({message: "Invalid Account"});
+    }
+    const accessToken = jwt.sign({_id: admin!.id}, process.env.SECRET as string, {expiresIn: "70s"});
+    const refreshToken = jwt.sign({_id: admin!.id}, process.env.REFRESH as string);
+    // const account = new User(req.body);
+    // account.save();
+    res.status(201).send({accessToken, refreshToken, message: "Successful" });
+}
