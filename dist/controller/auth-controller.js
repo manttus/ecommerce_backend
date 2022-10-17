@@ -13,9 +13,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loginController = exports.signupController = exports.createAdmin = exports.refreshAccessController = void 0;
-const user_1 = __importDefault(require("../modals/user"));
+const user_1 = __importDefault(require("../models/user"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const admin_1 = __importDefault(require("../modals/admin"));
+const admin_1 = __importDefault(require("../models/admin"));
 const refreshAccessController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.body.token === null)
         return res.send({ message: "Invalid Token" });

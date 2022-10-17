@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import User from "../modals/user";
+import User from "../models/user";
 import jwt from "jsonwebtoken";
-import Admin from "../modals/admin";
+import Admin from "../models/admin";
 
 export const refreshAccessController = async (req: Request, res: Response) => {
 

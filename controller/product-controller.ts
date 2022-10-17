@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import Product from "../modals/product"
+import Product from "../models/product"
 import jwt from "jsonwebtoken";
 
 export const getProductController = async (req: Request, res: Response) => {
